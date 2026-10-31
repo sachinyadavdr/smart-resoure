@@ -1,0 +1,4 @@
+import Link from 'next/link';
+export default function ImageCredits() {
+ return <main className="mx-auto max-w-3xl px-6 py-12"><Link href="/resources" className="text-sm font-semibold text-primary">← Explore resources</Link><h1 className="mt-6 text-3xl font-bold">Image credits</h1><div className="card mt-6 space-y-4 leading-7 text-slate-600"><p>Listings display owner-uploaded resource photos when available, with original illustrations created for this project as fallbacks. They illustrate resource types and do not depict the actual equipment or spaces.</p><p>Third-party photographs are not bundled: downloads from Wikimedia Commons were blocked. No third-party image licenses are claimed for the illustrations.</p><p>Owner-provided listing photographs take priority over illustrations and are labeled as photos from the resource owner. Private condition-report photographs are never used as listing images.</p></div></main>;
+}

@@ -1,0 +1,22 @@
+// Temporary browser verification: all data lives in memory; provider disabled.
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
+process.env.NODE_ENV = 'test';
+process.env.DATABASE_FILE = ':memory:';
+process.env.GEMINI_API_KEY = '';
+process.env.JWT_SECRET = 'temporary-in-memory-browser-verification-only';
+process.env.CLIENT_ORIGIN = 'http://localhost:3000';
+process.env.UPLOAD_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'rb-ai-role-browser-'));
+const moduleUrl = file => pathToFileURL(path.resolve(file)).href;
+const { default: app } = await import(moduleUrl('src/app.js'));
+const { db } = await import(moduleUrl('src/db/index.js'));
+await import(moduleUrl('src/db/seed.js'));
+const owner = db.prepare("SELECT id FROM users WHERE role='owner'").get();
+const inserted = db.prepare('INSERT INTO resources(owner_id,title,description,category,location) VALUES (?,?,?,?,?)').run(owner.id, 'Computer Laboratory', 'Computers for isolated browser verification.', 'Laboratory', 'Test Campus');
+db.prepare('INSERT INTO eligibility_requirements(resource_id,requirement) VALUES (?,?)').run(inserted.lastInsertRowid, 'Active student account');
+const server = app.listen(4107, '127.0.0.1', () => console.log('ISOLATED_AI_BROWSER_READY :memory: port 4107; Gemini disabled'));
+const shutdown = () => server.close(() => process.exit());
+process.on('SIGTERM', shutdown);
+process.on('SIGINT', shutdown);

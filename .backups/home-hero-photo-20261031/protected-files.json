@@ -1,0 +1,7 @@
+{
+  "frontend/app/components/PhaseOne.module.css": "9cc005eacda67083ec2a91e729fd28ec65aff8254f47941da21047e01849385b",
+  "frontend/app/components/AuthFrame.tsx": "ad85499b219b980a1bd874ca6c94b906501f25e325141020ce0f8690b8f43d87",
+  "frontend/app/login/page.tsx": "e7c834dfbe8b7a04bf1f9a82a8bfbf413a9bf984839e08d866c9d99da5504689",
+  "frontend/app/register/page.tsx": "7b1ee0977c3d9e2da3ad47ecb3cb744e44ae41a9c6c93ba9f1c64a07356210e2",
+  "frontend/public/resources/newimage.jpg": "e87ed34de21c8c74789088ee21e70264a00b8664d0f6f8d96bee71de3e946dae"
+}

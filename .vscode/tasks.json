@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Build ResourceBridge frontend",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"build",
+				"--workspace",
+				"frontend"
+			],
+			"problemMatcher": [],
+			"group": "build"
+		},
+		{
+			"label": "Run ResourceBridge isolated preview",
+			"type": "shell",
+			"command": "npm.cmd",
+			"args": [
+				"run",
+				"preview"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

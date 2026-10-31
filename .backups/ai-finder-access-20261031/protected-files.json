@@ -1,0 +1,7 @@
+{
+  "backend/src/app.js": "882a68b93d45656c3ece83311a427dd5986f353dee8cbf3f8be3741a2f5ea3b3",
+  "backend/src/auth.js": "27aefedabab4a9a97079a8f0e0d52debd1c43d6ddce8c0ca575ffa3cd8bc2eff",
+  "backend/src/ai.js": "bfb98f103157b2c15dc2913be88c158f251367095b076cdd7292830cfe844a12",
+  "frontend/app/lib/api.ts": "b2bbd71229866b5b6fe0c0db82a95a5bd245170cdb55835130073c7c10ff60ed",
+  "frontend/app/resources/page.tsx": "1b6104b14eed6a1e5b4b85129b10b3cc33413680a249461fbcd6aed4d5ec97f2"
+}

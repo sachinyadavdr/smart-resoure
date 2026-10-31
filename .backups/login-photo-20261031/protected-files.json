@@ -1,0 +1,8 @@
+{
+  "frontend/app/login/page.tsx": "e7c834dfbe8b7a04bf1f9a82a8bfbf413a9bf984839e08d866c9d99da5504689",
+  "frontend/app/register/page.tsx": "7b1ee0977c3d9e2da3ad47ecb3cb744e44ae41a9c6c93ba9f1c64a07356210e2",
+  "frontend/app/page.tsx": "e4b5221dddf1db558129f18fdb51ead187542f755a44e1de81fef9ed1a6ffd22",
+  "frontend/app/components/PhaseOne.module.css": "9cc005eacda67083ec2a91e729fd28ec65aff8254f47941da21047e01849385b",
+  "frontend/app/components/RegistrationBranding.module.css": "6f3b9a1d1a3ea5314ed5c3c14000b9704275ea399c0361c3c132134023036e3b",
+  "frontend/public/resources/download (1).jpg": "902cd76195b3e1be313a850386817a3b945445cefcf580f22bed83fd29308991"
+}

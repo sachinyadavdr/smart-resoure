@@ -1,0 +1,37 @@
+.photoPanel {
+  background-color: #0b1220;
+  background-image:
+    linear-gradient(160deg, rgba(11, 18, 32, .78) 0%, rgba(11, 18, 32, .74) 40%, rgba(11, 18, 32, .94) 100%),
+    url('/resources/download%20(1).jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.photoPanel > p { color: #e0e5ee; }
+.photoPanel h2 { color: #fff; }
+.photoPanel h2 span { color: #d6d2ff; }
+
+.photoPanel .tiles > div {
+  background: rgba(255, 255, 255, .10);
+  border-color: rgba(255, 255, 255, .22);
+  color: #f8fafc;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, .08);
+}
+
+.photoPanel .tiles > div:nth-child(2) {
+  background: rgba(233, 231, 255, .18);
+  border-color: rgba(233, 231, 255, .28);
+  color: #fff;
+}
+
+.photoPanel .tiles svg { color: #d6d2ff; }
+
+@media (max-width: 767px) {
+  .photoPanel {
+    background-position: center 44%;
+    background-image:
+      linear-gradient(110deg, rgba(11, 18, 32, .88), rgba(11, 18, 32, .72)),
+      url('/resources/download%20(1).jpg');
+  }
+}
