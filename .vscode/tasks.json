@@ -24,6 +24,20 @@
 			],
 			"isBackground": true,
 			"problemMatcher": []
+		},
+		{
+			"label": "Run ResourceBridge AI",
+			"type": "shell",
+			"command": "npm.cmd run dev",
+			"isBackground": true,
+			"problemMatcher": []
+		},
+		{
+			"label": "Stop ResourceBridge local servers",
+			"type": "shell",
+			"command": "powershell.exe -NoProfile -Command \"$ports = 3000,4000; $pids = Get-NetTCPConnection -State Listen -LocalPort $ports -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique; if ($pids) { $pids | ForEach-Object { Stop-Process -Id $_ -Force } }\"",
+			"isBackground": false,
+			"problemMatcher": []
 		}
 	]
 }

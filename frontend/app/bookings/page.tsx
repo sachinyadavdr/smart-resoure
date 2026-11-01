@@ -3,7 +3,7 @@ import { BookingPrice } from '../components/ResourcePrice';
 
 import { FormEvent, useEffect, useState } from 'react';
 
-const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+import { API_BASE_URL as API } from '../lib/api';
 type Booking = { id: number; quotedHourlyPricePaise?: number | null; estimatedTotalPaise?: number | null; resourceTitle: string; status: string; startsAt: string; endsAt: string; purpose: string; decisionReason?: string; location: string };
 type ActionState = { message: string; error: string };
 

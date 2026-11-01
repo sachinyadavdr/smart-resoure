@@ -14,6 +14,45 @@ await import('../src/db/seed.js');
 test('health endpoint is available', async () => { const response = await request(app).get('/api/health'); assert.equal(response.status, 200); assert.equal(response.body.status, 'ok'); });
 test('resource listing is public and returns an array', async () => { const response = await request(app).get('/api/resources'); assert.equal(response.status, 200); assert.ok(Array.isArray(response.body.resources)); });
 test('invalid login is rejected safely', async () => { const response = await request(app).post('/api/auth/login').send({ email: 'not-an-email', password: '' }); assert.equal(response.status, 400); assert.equal(response.body.error, 'Email and password are required.'); });
+test('registration normalizes email casing and returns a stable duplicate conflict', async () => {
+  const email = `duplicate-${Date.now()}@example.test`;
+  const registration = await request(app).post('/api/auth/register').send({ name: 'Duplicate Fixture', email: email.toUpperCase(), password: 'DemoPass123!', role: 'owner' });
+  assert.equal(registration.status, 201);
+  assert.equal(registration.body.user.email, email);
+  assert.equal(registration.body.user.role, 'owner');
+  assert.ok(registration.body.token);
+
+  const duplicate = await request(app).post('/api/auth/register').send({ name: 'Duplicate Fixture', email, password: 'DemoPass123!' });
+  assert.equal(duplicate.status, 409);
+  assert.deepEqual(duplicate.body, {
+    error: 'This email is already registered. Please log in or use a different email.',
+    code: 'EMAIL_ALREADY_EXISTS',
+  });
+  assert.equal(JSON.stringify(duplicate.body).includes('SQLITE'), false);
+  assert.equal(JSON.stringify(duplicate.body).includes('stack'), false);
+});
+test('public registration cannot create an admin account', async () => {
+  const response = await request(app).post('/api/auth/register').send({
+    name: 'Admin Registration Attempt',
+    email: `admin-attempt-${Date.now()}@example.test`,
+    password: 'DemoPass123!',
+    role: 'admin',
+  });
+  assert.equal(response.status, 400);
+  assert.equal(response.body.error, 'Invalid registration details.');
+});
+test('simultaneous registrations for the same normalized email allow only one account', async () => {
+  const email = `concurrent-${Date.now()}@example.test`;
+  const payload = (candidateEmail) => ({ name: 'Concurrent Fixture', email: candidateEmail, password: 'DemoPass123!' });
+  const responses = await Promise.all([
+    request(app).post('/api/auth/register').send(payload(email)),
+    request(app).post('/api/auth/register').send(payload(email.toUpperCase())),
+  ]);
+  assert.deepEqual(responses.map((response) => response.status).sort(), [201, 409]);
+  const duplicate = responses.find((response) => response.status === 409);
+  assert.equal(duplicate.body.code, 'EMAIL_ALREADY_EXISTS');
+  assert.equal(db.prepare('SELECT COUNT(*) AS count FROM users WHERE email = ?').get(email).count, 1);
+});
 test('seeded student can log in but cannot create resources', async () => { const login = await request(app).post('/api/auth/login').send({ email: 'student@example.test', password: 'DemoPass123!' }); assert.equal(login.status, 200); assert.ok(login.body.token); const response = await request(app).post('/api/resources').set('Authorization', `Bearer ${login.body.token}`).send({ title: 'Student Attempt', description: 'This should be rejected by role authorization.', category: 'Test', location: 'Test Lab' }); assert.equal(response.status, 403); });
 test('seeded owner can create a validated resource', async () => { const login = await request(app).post('/api/auth/login').send({ email: 'owner@example.test', password: 'DemoPass123!' }); assert.equal(login.status, 200); const response = await request(app).post('/api/resources').set('Authorization', `Bearer ${login.body.token}`).send({ title: 'Demo Camera', description: 'A fictional camera for testing resource sharing.', category: 'Media', location: 'Studio A', eligibility: ['Active owner account'] }); assert.equal(response.status, 201); assert.ok(response.body.resourceId); });
 test('owner resource management persists capacity, requirements, edits, and ownership boundaries', async () => {

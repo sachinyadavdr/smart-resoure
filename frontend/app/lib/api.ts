@@ -1,4 +1,7 @@
-export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api').replace(/\/$/, '');
+import { resolveApiBaseUrl } from './api-url.mjs';
+
+// Keep the direct process.env access: Next.js inlines this value at build time.
+export const API_BASE_URL = resolveApiBaseUrl(process.env.NEXT_PUBLIC_API_URL, process.env.NODE_ENV === 'production');
 
 // The server exposes only API-relative UUID references, never filesystem paths.
 export function resourceImageUrl(reference?: string | null): string {
@@ -16,7 +19,7 @@ export async function requestJson<T>(path: string, init: RequestInit = {}): Prom
   try {
     response = await fetch(`${API_BASE_URL}${path}`, init);
   } catch {
-    throw new Error(`Unable to reach ResourceBridge API at ${API_BASE_URL}. Make sure the backend is running on port 4000.`);
+    throw new Error(`Unable to reach ResourceBridge API at ${API_BASE_URL}. Check the API URL, backend availability and allowed frontend origin.`);
   }
 
   const body = await response.text();

@@ -73,6 +73,10 @@
 .authForm input:focus,.authForm select:focus { border-color:#635bff; box-shadow:0 0 0 3px #635bff12; }
 .authForm button { margin-top:5px; width:100%; min-height:47px; border-radius:8px; background:#635bff; color:white; font-size:14px; font-weight:650; transition:background .18s; }
 .authForm button:hover:not(:disabled) { background:#5148e5; }
+.authForm input[aria-invalid="true"] { border-color:#b42318; }
+.emailError { margin-top:6px; color:#b42318; font-size:12px; line-height:1.5; }
+.emailError a { color:#8f1d14; font-weight:650; text-decoration:underline; text-underline-offset:2px; }
+.emailError a:focus-visible { outline:2px solid #b42318; outline-offset:2px; }
 .authSwitch { border-top:1px solid #e9edf5; padding-top:22px; margin-top:24px; font-size:12px; color:#647084; }
 .authSwitch a { color:#635bff; font-weight:650; margin-left:4px; }
 .feedback { padding:12px 14px; margin-top:18px; border:1px solid #dbd8ff; border-radius:8px; color:#413991; font-size:13px; line-height:1.7; background:#f3f2ff; }

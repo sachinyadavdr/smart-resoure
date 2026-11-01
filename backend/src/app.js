@@ -38,6 +38,10 @@ const checkoutSchema = conditionSchema.extend({ returnNotes: z.string().trim().m
 const incidentSchema = z.object({ category: z.enum(['damage', 'delay', 'missing_equipment', 'other']), description: z.string().trim().min(5).max(2000) });
 const incidentUpdateSchema = z.object({ status: z.enum(['open', 'investigating', 'resolved', 'dismissed']), resolutionNotes: z.string().trim().min(3).max(2000) });
 const publicUser = (user) => ({ id: user.id, name: user.name, email: user.email, role: user.role });
+const isEmailUniqueConstraint = (error) => error && typeof error === 'object' && (
+  error.code === 'SQLITE_CONSTRAINT_UNIQUE' ||
+  (error.errcode === 2067 && error.message === 'UNIQUE constraint failed: users.email')
+);
 const audit = (actorId, action, entityType, entityId, metadata = {}) => db.prepare('INSERT INTO audit_logs (actor_id, action, entity_type, entity_id, metadata) VALUES (?, ?, ?, ?, ?)').run(actorId, action, entityType, entityId, JSON.stringify(metadata));
 const notify = (userId, type, title, message, entityType, entityId, dedupeKey) => db.prepare('INSERT OR IGNORE INTO notifications (user_id, type, title, message, entity_type, entity_id, dedupe_key) VALUES (?, ?, ?, ?, ?, ?, ?)').run(userId, type, title, message, entityType, entityId, dedupeKey);
 const toIso = (value) => new Date(value).toISOString();
@@ -50,7 +54,7 @@ app.get('/api/health', (_req, res) => res.json({ status: 'ok' }));
 app.post('/api/auth/register', (req, res) => {
   const parsed = registerSchema.safeParse(req.body); if (!parsed.success) return res.status(400).json({ error: 'Invalid registration details.', details: parsed.error.flatten() });
   const { name, email, password, role } = parsed.data;
-  try { const result = db.prepare('INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)').run(name, email.toLowerCase(), bcrypt.hashSync(password, 12), role); const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid); return res.status(201).json({ user: publicUser(user), token: createToken(user) }); } catch (error) { if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') return res.status(409).json({ error: 'An account with that email already exists.' }); throw error; }
+  try { const result = db.prepare('INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, ?)').run(name, email.toLowerCase(), bcrypt.hashSync(password, 12), role); const user = db.prepare('SELECT * FROM users WHERE id = ?').get(result.lastInsertRowid); return res.status(201).json({ user: publicUser(user), token: createToken(user) }); } catch (error) { if (isEmailUniqueConstraint(error)) return res.status(409).json({ error: 'This email is already registered. Please log in or use a different email.', code: 'EMAIL_ALREADY_EXISTS' }); throw error; }
 });
 app.post('/api/auth/login', (req, res) => {
   const parsed = z.object({ email: z.string().email(), password: z.string().min(1) }).safeParse(req.body); if (!parsed.success) return res.status(400).json({ error: 'Email and password are required.' });

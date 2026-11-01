@@ -7,3 +7,10 @@ node_modules/
 dist/
 coverage/
 backend/data/
+
+# Local review snapshots and environment overrides are not deployment inputs.
+.backups/
+.design-review/
+.env.*
+!.env.example
+!**/.env.example
